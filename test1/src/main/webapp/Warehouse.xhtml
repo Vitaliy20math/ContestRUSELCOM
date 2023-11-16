@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+<!--<f:view>-->
+<!--    <h:outputLabel value="#{item.name}"/>-->
+<!--</f:view>-->
+<h:head>
+    <title>"Welcom to Mini Warehouse"</title>
+</h:head>
+<h:body>
+    <h:form>
+        <p:panel header="Добавление элемента на склад">
+            <p:panelGrid columns="2">
+                <p:column>
+                    Наименование (Только латиница!)
+                </p:column>
+                <p:column>
+                    Количество (0 &lt; n &lt; 10000)
+                </p:column>
+                <p:column>
+                    <p:inputText value="#{warehouse.item.name}"  label="URL" required="true" requiredMessage="">
+                        <f:validator validatorId="webapp.customsValidators.InputNameItemValidator" />
+                    </p:inputText>
+                </p:column>
+                <p:column>
+                    <p:inputText value="#{warehouse.item.count}">
+                        <f:validator validatorId="webapp.customsValidators.InputCountItemValidator" />
+                    </p:inputText>
+                </p:column>
+
+                <p:commandButton value="Добавить элемент" process="@form" actionListener="#{warehouse.addItem()}" update="addedItem"/>
+
+            </p:panelGrid>
+        </p:panel>
+        <p:panel header="Добавленные элементы" id="addedItem">
+
+            <p:commandButton value="Сортировка по имени" actionListener="#{warehouse.sortItemsByName()}" update="addedItem"/>
+            <p:commandButton value="Сортировка по дате добавления" actionListener="#{warehouse.sortItemsByDateAdded()}" style="margin-left: 50px;" update="addedItem"/>
+            <p:commandButton value="Сортировка по дате последнего обновления" actionListener="#{warehouse.sortItemsByDateUpdate()}" style="margin-left: 50px;" update="addedItem"/>
+                <p:dataTable value="#{warehouse.items}" var="item">
+                    <p:column>
+                        <h:outputText value="#{item.name}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.count}"/>
+                    </p:column>
+                    <p:column>
+                        <p:inputText value="#{item.quantityToAdd}" style="width: 75px;"/>
+                        <p:commandButton action="#{warehouse.addQuantityForItem(item, item.quantityToAdd)}" value="+" style="width: 50px;margin-left: 10px;" ajax="false" update="addedItem"/>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton action="#{warehouse.deleteAll(item)}" value="Удалить все" ajax="false" update="addedItem"/>
+                    </p:column>
+                    <p:column>
+                        <p:panelGrid columns="2">
+                            <p:inputText value="#{item.quantityToDec}" style="width: 75px;margin-left: -20px;"/>
+                            <p:commandButton action="#{warehouse.decreaseItemCount(item, item.quantityToDec)}" value="-" ajax="false" style="width: auto;margin-left: -10px;" update="addedItem"/>
+                        </p:panelGrid>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="См. движение" update="movementDialog" oncomplete="PF('movementDialogWidget').show()" />
+                        <p:dialog id="movementDialog" header="Движение" widgetVar="movementDialogWidget" modal="true" resizable="false">
+                            <p:dataTable value="#{item.movements}" var="movement">
+                                <p:column>
+                                    <h:outputText value="#{movement.flow}" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{movement.date}" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{movement.count}" />
+                                </p:column>
+                            </p:dataTable>
+                        </p:dialog>
+                    </p:column>
+                </p:dataTable>
+        </p:panel>
+    </h:form>
+
+</h:body>
+</html>

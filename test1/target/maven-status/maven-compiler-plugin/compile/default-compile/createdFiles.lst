@@ -1,0 +1,6 @@
+webapp\Item.class
+webapp\Movement.class
+webapp\customsValidators\InputCountItemValidator.class
+webapp\customsValidators\InputNameItemValidator.class
+webapp\Warehouse.class
+webapp\Main.class
